@@ -21,3 +21,27 @@ public class StreakManager {
     public StreakManager() {
         loadStreak();
     }
+    public int getCurrentStreak() { return currentStreak; }
+
+    /**
+     * Call once per game session (after a quiz is completed).
+     * Updates the streak and saves to disk.
+     */
+    public void recordPlayedToday() {
+        LocalDate today = LocalDate.now();
+
+        if (lastPlayedDate == null) {
+            // First time ever
+            currentStreak = 1;
+        } else {
+            long daysBetween = ChronoUnit.DAYS.between(lastPlayedDate, today);
+            if (daysBetween == 0) {
+                // Already played today — no change
+                return;
+            } else if (daysBetween == 1) {
+                // Consecutive day
+                currentStreak++;
+            } else {
+                // Streak broken
+                currentStreak = 1;
+            }
