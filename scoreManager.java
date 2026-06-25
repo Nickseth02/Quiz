@@ -55,3 +55,66 @@ public class scoreManager {
             System.err.println("Warning: could not save high score – " + e.getMessage());
         }
     }
+// ─── Leaderboard ─────────────────────────────────────────────────────────
+
+    private void addToLeaderboard(PlayerRecord record) {
+        leaderboard.offer(record);
+        // Keep only the top MAX_LEADERBOARD entries
+        if (leaderboard.size() > MAX_LEADERBOARD) {
+            // Rebuild keeping the best N (PQ is a max-heap already — just trim)
+            List<PlayerRecord> all = new ArrayList<>(leaderboard);
+            Collections.sort(all);
+            leaderboard.clear();
+            for (int i = 0; i < Math.min(MAX_LEADERBOARD, all.size()); i++) {
+                leaderboard.offer(all.get(i));
+            }
+        }
+        saveLeaderboard();
+    }
+
+    /** Returns the leaderboard sorted best-first (copy, safe to mutate). */
+    public List<PlayerRecord> getTopScores() {
+        List<PlayerRecord> sorted = new ArrayList<>(leaderboard);
+        Collections.sort(sorted);
+        return sorted;
+    }
+ public void displayLeaderboard() {
+        List<PlayerRecord> top = getTopScores();
+        System.out.println("\n╔══════════════════════════════════════════════════════╗");
+        System.out.println("║               🏆  TOP LEADERBOARD  🏆                ║");
+        System.out.println("╠══════════════════════════════════════════════════════╣");
+        if (top.isEmpty()) {
+            System.out.println("║              No records yet. Play to appear here!    ║");
+        } else {
+            String[] medals = {"🥇", "🥈", "🥉"};
+            for (int i = 0; i < top.size(); i++) {
+                String rank = (i < 3) ? medals[i] : " " + (i + 1) + ".";
+                System.out.printf("║ %-3s  %s%n", rank, top.get(i));
+            }
+        }
+        System.out.println("╚══════════════════════════════════════════════════════╝");
+    }
+
+    private void loadLeaderboard() {
+        File f = new File(LEADERBOARD_FILE);
+        if (!f.exists()) return;
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                PlayerRecord r = PlayerRecord.fromCsvLine(line);
+                if (r != null) leaderboard.offer(r);
+            }
+        } catch (IOException e) {
+            System.err.println("Warning: could not load leaderboard – " + e.getMessage());
+        }
+    }
+
+    private void saveLeaderboard() {
+        ensureDataDir();
+        List<PlayerRecord> sorted = getTopScores();
+        try (PrintWriter pw = new PrintWriter(new FileWriter(LEADERBOARD_FILE))) {
+            for (PlayerRecord r : sorted) pw.println(r.toCsvLine());
+        } catch (IOException e) {
+            System.err.println("Warning: could not save leaderboard – " + e.getMessage());
+        }
+    }	 
