@@ -19,7 +19,7 @@ public class playerRecord implements Comparable<playerRecord> {
     public String getCategory() { return category; }
 // Max-heap: higher score = higher priority
     @Override
-    public int compareTo(PlayerRecord other) {
+    public int compareTo(playerRecord other) {
         return Integer.compare(other.score, this.score);
     }
 
@@ -29,11 +29,11 @@ public class playerRecord implements Comparable<playerRecord> {
     }
 
     /** Parse from a CSV line produced by toCsvLine() */
-    public static PlayerRecord fromCsvLine(String line) {
+    public static playerRecord fromCsvLine(String line) {
         String[] parts = line.split(",", 4);
         if (parts.length < 4) return null;
         try {
-            return new PlayerRecord(parts[0], Integer.parseInt(parts[1].trim()), parts[2].trim(), parts[3].trim());
+            return new playerRecord(parts[0], Integer.parseInt(parts[1].trim()), parts[2].trim(), parts[3].trim());
         } catch (NumberFormatException e) {
             return null;
         }
