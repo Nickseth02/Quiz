@@ -85,3 +85,19 @@ public class StreakManager {
             currentStreak  = 0;
         }
     }
+
+    private void saveStreak() {
+        ensureDataDir();
+        try (PrintWriter pw = new PrintWriter(new FileWriter(STREAK_FILE))) {
+            pw.println(lastPlayedDate.toString());
+            pw.println(currentStreak);
+        } catch (IOException e) {
+            System.err.println("Warning: could not save streak – " + e.getMessage());
+        }
+    }
+
+    private void ensureDataDir() {
+        File dir = new File("data");
+        if (!dir.exists()) dir.mkdirs();
+    }
+}
