@@ -118,3 +118,45 @@ public class scoreManager {
             System.err.println("Warning: could not save leaderboard – " + e.getMessage());
         }
     }	 
+ // ─── Grading ─────────────────────────────────────────────────────────────
+
+    /** Returns letter grade based on percentage score. */
+    public static String getGrade(int score, int total) {
+        if (total == 0) return "N/ public void displayLeaderboard() {
+        List<PlayerRecord> top = getTopScores();
+        System.out.println("\n╔══════════════════════════════════════════════════════╗");
+        System.out.println("║               🏆  TOP LEADERBOARD  🏆                ║");
+        System.out.println("╠══════════════════════════════════════════════════════╣");
+        if (top.isEmpty()) {
+            System.out.println("║              No records yet. Play to appear here!    ║");
+        } else {
+            String[] medals = {"🥇", "🥈", "🥉"};
+            for (int i = 0; i < top.size(); i++) {
+                String rank = (i < 3) ? medals[i] : " " + (i + 1) + ".";
+                System.out.printf("║ %-3s  %s%n", rank, top.get(i));
+            }
+        }
+        System.out.println("╚══════════════════════════════════════════════════════╝");
+    }
+
+    private void loadLeaderboard() {
+        File f = new File(LEADERBOARD_FILE);
+        if (!f.exists()) return;
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                PlayerRecord r = PlayerRecord.fromCsvLine(line);A";
+        double pct = (score * 100.0) / total;
+        if (pct >= 90) return "A+";
+        if (pct >= 80) return "A";
+        if (pct >= 70) return "B";
+        if (pct >= 60) return "C";
+        if (pct >= 50) return "D";
+        return "F";
+    }
+
+    private void ensureDataDir() {
+        File dir = new File("data");
+        if (!dir.exists()) dir.mkdirs();
+    }
+}
