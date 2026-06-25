@@ -45,3 +45,43 @@ public class StreakManager {
                 // Streak broken
                 currentStreak = 1;
             }
+    }
+
+        lastPlayedDate = today;
+        saveStreak();
+    }
+
+    public void displayStreak() {
+        System.out.println("\n🔥 Current Streak: " + currentStreak + " day"
+            + (currentStreak == 1 ? "" : "s") + " 🔥");
+
+        if (lastPlayedDate != null) {
+            System.out.println("   Last played: " + lastPlayedDate);
+        }
+
+        if (currentStreak >= 7) {
+            System.out.println("   🌟 Week-long warrior! Keep it up!");
+        } else if (currentStreak >= 3) {
+            System.out.println("   ⚡ On a roll! Don't break the chain!");
+        } else if (currentStreak == 1) {
+            System.out.println("   👋 Welcome! Play tomorrow to build a streak.");
+        }
+    }
+
+    private void loadStreak() {
+        File f = new File(STREAK_FILE);
+        if (!f.exists()) {
+            lastPlayedDate = null;
+            currentStreak  = 0;
+            return;
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+            String dateLine   = br.readLine();
+            String streakLine = br.readLine();
+            lastPlayedDate = (dateLine   != null) ? LocalDate.parse(dateLine.trim()) : null;
+            currentStreak  = (streakLine != null) ? Integer.parseInt(streakLine.trim()) : 0;
+        } catch (Exception e) {
+            lastPlayedDate = null;
+            currentStreak  = 0;
+        }
+    }
